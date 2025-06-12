@@ -1,9 +1,12 @@
 import userRepository from "../user/user.repository.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const { createUser, findUserByEmail } = userRepository;
 
 const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS) || 10;
+const JWT_SECRET = process.env.JWT_SECRET || "01JXHRAD85FT1QHEEY2FMKFKM2";
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1d";
 
 const registerService = async (userData) => {
   const existingUser = await findUserByEmail(userData.email);
@@ -21,4 +24,26 @@ const registerService = async (userData) => {
   return user;
 };
 
-export default { registerService };
+const loginService = async ({ email, password }) => {
+  const user = await findUserByEmail(email);
+  if (!user) {
+    throw new Error("Invalid email or password");
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) throw new Error("Invalid email or password");
+
+  const payload = {
+    id: user.id,
+    name: user.name,
+    photo: user.photo,
+  };
+
+  const token = jwt.sign(payload, JWT_SECRET, {
+    expiresIn: JWT_EXPIRES_IN,
+  });
+
+  return token;
+};
+
+export default { registerService, loginService };

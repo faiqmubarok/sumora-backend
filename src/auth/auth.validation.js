@@ -5,3 +5,8 @@ export const registerSchema = yup.object().shape({
   email: emailField,
   password: passwordField,
 });
+
+export const loginSchema = yup.object().shape({
+  email: emailField,
+  password: yup.string().required("Password is required"),
+});
