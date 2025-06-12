@@ -13,7 +13,7 @@ app.use(cors());
 app.get("/", (req, res) => {
   res.json({ message: "Hello" });
 });
-app.use("/api/v1/users", authController);
+app.use("/api/v1/users/auth", authController);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
