@@ -20,7 +20,40 @@ model User {
   password  String?
   photo     String?
   phone     String?
-  deviceId  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  devices Device[] @relation("UserDevices")
+}
+
+model Device {
+  id       String  @id @default(uuid())
+  userId   String
+  sensorId String  @unique
+  qrcode   String?
+
+  user       User         @relation("UserDevices", fields: [userId], references: [id])
+  sensorData SensorData[]
+}
+
+model SensorData {
+  id       String @id @default(uuid())
+  deviceId String
+
+  ph          Float
+  chloromines Float
+  solids      Float
+  sulfate     Float
+
+  device      Device       @relation(fields: [deviceId], references: [id])
+  predictions Prediction[]
+}
+
+model Prediction {
+  id       String @id @default(uuid())
+  sensorId String
+
+  result String
+
+  sensor SensorData @relation(fields: [sensorId], references: [id])
 }
