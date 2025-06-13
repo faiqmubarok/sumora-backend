@@ -4,6 +4,12 @@ const createDevice = async () => {
   return prisma.device.create({ data: {} });
 };
 
+const getDeviceById = async (id) => {
+  return prisma.device.findUnique({
+    where: { id },
+  });
+};
+
 const updateDevice = async (id, data) => {
   return prisma.device.update({
     where: { id },
@@ -12,6 +18,7 @@ const updateDevice = async (id, data) => {
 };
 
 export default {
+  getDeviceById,
   createDevice,
   updateDevice,
 };
