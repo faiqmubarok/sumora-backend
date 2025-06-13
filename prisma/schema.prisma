@@ -27,12 +27,11 @@ model User {
 }
 
 model Device {
-  id       String  @id @default(uuid())
-  userId   String
-  sensorId String  @unique
-  qrcode   String?
+  id     String  @id @default(uuid())
+  userId String?
+  qrcode String?
 
-  user       User         @relation("UserDevices", fields: [userId], references: [id])
+  user       User?        @relation("UserDevices", fields: [userId], references: [id], onDelete: SetNull)
   sensorData SensorData[]
 }
 
@@ -45,15 +44,15 @@ model SensorData {
   solids      Float
   sulfate     Float
 
-  device      Device       @relation(fields: [deviceId], references: [id])
+  device      Device       @relation(fields: [deviceId], references: [id], onDelete: Cascade)
   predictions Prediction[]
 }
 
 model Prediction {
-  id       String @id @default(uuid())
-  sensorId String
+  id           String @id @default(uuid())
+  sensorDataId String
 
   result String
 
-  sensor SensorData @relation(fields: [sensorId], references: [id])
+  sensor SensorData @relation(fields: [sensorDataId], references: [id], onDelete: Cascade)
 }
