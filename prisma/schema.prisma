@@ -19,6 +19,8 @@ model User {
   name      String?
   password  String?
   photo     String?
+  phone     String?
+  deviceId  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

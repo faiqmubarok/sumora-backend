@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import authController from "./auth/auth.controller.js";
+import userController from "./user/user.controller.js";
 
 dotenv.config();
 const app = express();
@@ -13,6 +14,7 @@ app.use(cors());
 app.get("/", (req, res) => {
   res.json({ message: "Hello" });
 });
+app.use("/api/v1/users", userController);
 app.use("/api/v1/users/auth", authController);
 
 app.listen(PORT, () => {
