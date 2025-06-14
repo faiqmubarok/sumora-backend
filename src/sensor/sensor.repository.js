@@ -20,6 +20,19 @@ export const getLatestSensor = async (deviceId) => {
     return prisma.sensorData.findFirst({
         where: { deviceId },
         orderBy: { createdAt: "desc" },
+        select: {
+            id: true,
+            ph: true,
+            chloromines: true,
+            solids: true,
+            sulfate: true,
+            createdAt: true,
+            predictions: {
+                select: {
+                    result: true,
+                },
+            },
+        }
     });
 };
 
@@ -27,6 +40,19 @@ export const getLastSensor = async (deviceId) => {
     return prisma.sensorData.findMany({
         where: { deviceId },
         orderBy: { createdAt: "desc" },
+        select: {
+            id: true,
+            ph: true,
+            chloromines: true,
+            solids: true,
+            sulfate: true,
+            createdAt: true,
+            predictions: {
+                select: {
+                    result: true,
+                },
+            },
+        },
         take: 10,
     });
 };
