@@ -22,6 +22,7 @@ const findUserById = async (id) => {
       devices: {
         select: {
           id: true,
+          name: true,
         },
       },
     },

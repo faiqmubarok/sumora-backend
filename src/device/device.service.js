@@ -2,11 +2,15 @@ import deviceRepository from "./device.repository.js";
 import { generateQRCode } from "../utils/qrcode.js";
 import userRepository from "../user/user.repository.js";
 
-const { createDevice, updateDevice, getDeviceById } = deviceRepository;
+const { createDevice, updateDevice, getDeviceById, getDeviceByName } =
+  deviceRepository;
 const { findUserById } = userRepository;
 
-const createDeviceService = async () => {
-  const device = await createDevice();
+const createDeviceService = async (name) => {
+  const existingDevice = await getDeviceByName(name);
+  if (existingDevice) throw new Error("Device name already exists");
+
+  const device = await createDevice(name);
 
   const qrcode = await generateQRCode(device.id);
 

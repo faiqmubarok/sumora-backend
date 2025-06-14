@@ -1,7 +1,13 @@
 import prisma from "../config/prisma.js";
 
-const createDevice = async () => {
-  return prisma.device.create({ data: {} });
+const createDevice = async (name) => {
+  return prisma.device.create({ data: { name } });
+};
+
+const getDeviceByName = async (name) => {
+  return prisma.device.findUnique({
+    where: { name },
+  });
 };
 
 const getDeviceById = async (id) => {
@@ -18,6 +24,7 @@ const updateDevice = async (id, data) => {
 };
 
 export default {
+  getDeviceByName,
   getDeviceById,
   createDevice,
   updateDevice,

@@ -8,7 +8,15 @@ const router = Router();
 
 router.post("/", async (req, res) => {
   try {
-    const device = await createDeviceService();
+    const { name } = req.body;
+
+    if (!name) return res.status(400).json({ error: "Name is required" });
+
+    if (!/^SMR-/.test(name)) {
+      return res.status(400).json({ error: "Name must start with 'SMR-'" });
+    }
+
+    const device = await createDeviceService(name);
     res.status(201).json({
       message: "Device created successfully",
       data: device,
