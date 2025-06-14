@@ -27,10 +27,11 @@ model User {
 }
 
 model Device {
-  id     String  @id @default(uuid())
-  userId String?
-  name   String  @unique
-  qrcode String?
+  id        String   @id @default(uuid())
+  userId    String?
+  name      String   @unique
+  qrcode    String?
+  createdAt DateTime @default(now())
 
   user       User?        @relation("UserDevices", fields: [userId], references: [id], onDelete: SetNull)
   sensorData SensorData[]
@@ -44,6 +45,7 @@ model SensorData {
   chloromines Float
   solids      Float
   sulfate     Float
+  createdAt   DateTime @default(now())
 
   device      Device       @relation(fields: [deviceId], references: [id], onDelete: Cascade)
   predictions Prediction[]
