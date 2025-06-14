@@ -5,6 +5,19 @@ const findUserByEmail = async (email) => {
     where: {
       email,
     },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      photo: true,
+      password: true,
+      devices: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
   });
 };
 
