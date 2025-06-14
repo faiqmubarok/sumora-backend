@@ -3,16 +3,22 @@ import * as sensorService from "./sensor.service.js";
 
 const router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
-    const { deviceId } = req.params;
-    const { filter } = req.query;
+    const { id } = req.params;
+    const { limit } = req.query;
+    const parsedLimit = Number(limit);
 
-    const result = await sensorService.getSensorByFilter(deviceId, filter);
-    res.status(200).json(result);
+    if (!id) return res.status(400).json({ error: "sensorId is required" });
+
+    const result = await sensorService.getSensorByIdService(
+      id,
+      isNaN(parsedLimit) ? undefined : parsedLimit
+    );
+    res.status(200).json({ result });
   } catch (error) {
-    console.error("Error getting sensor data:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error(error);
+    res.status(400).send({ error: error.message });
   }
 });
 
