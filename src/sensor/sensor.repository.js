@@ -1,62 +1,27 @@
 import prisma from "../config/prisma.js";
 
-export const getSensorDataSummary = async (deviceId) => {
-    const [latest, last] = await Promise.all([
-        prisma.sensorData.findFirst({
-            where: { deviceId },
-            orderBy: { createdAt: "desc" },
-        }),
-        prisma.sensorData.findMany({
-            where: { deviceId },
-            orderBy: { createdAt: "desc" },
-            take: 10,
-        }),
-    ]);
-
-    return { latest, last };
-};
-
-export const getLatestSensor = async (deviceId) => {
-    return prisma.sensorData.findFirst({
-        where: { deviceId },
-        orderBy: { createdAt: "desc" },
+export const getSensorData = async (deviceId, limit = 10) => {
+  return prisma.sensorData.findMany({
+    where: { deviceId },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    select: {
+      id: true,
+      ph: true,
+      chloromines: true,
+      solids: true,
+      sulfate: true,
+      createdAt: true,
+      predictions: {
         select: {
-            id: true,
-            ph: true,
-            chloromines: true,
-            solids: true,
-            sulfate: true,
-            createdAt: true,
-            predictions: {
-                select: {
-                    result: true,
-                },
-            },
-        }
-    });
-};
-
-export const getLastSensor = async (deviceId) => {
-    return prisma.sensorData.findMany({
-        where: { deviceId },
-        orderBy: { createdAt: "desc" },
-        select: {
-            id: true,
-            ph: true,
-            chloromines: true,
-            solids: true,
-            sulfate: true,
-            createdAt: true,
-            predictions: {
-                select: {
-                    result: true,
-                },
-            },
+          result: true,
         },
-        take: 10,
-    });
+      },
+    },
+  });
 };
 
 export const createSensor = async (data) => prisma.sensorData.create({ data });
 
-export const createPrediction = async (data) => prisma.prediction.create({ data });
+export const createPrediction = async (data) =>
+  prisma.prediction.create({ data });
