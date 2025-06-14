@@ -48,8 +48,31 @@ const createUser = async (user) => {
   });
 };
 
+const updateUserById = async (id, data) => {
+  return await prisma.user.update({
+    where: { id },
+    data,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      photo: true,
+      phone: true,
+      createdAt: true,
+      updatedAt: true,
+      devices: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+};
+
 export default {
   findUserById,
   findUserByEmail,
   createUser,
+  updateUserById,
 };
