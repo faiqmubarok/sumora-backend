@@ -18,11 +18,9 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    console.log(req.body);
     const result = await sensorService.createSensor(req.body);
     res.status(201).send({ result });
   } catch (error) {
-    console.error(error);
     console.log(error.message);
     res.status(400).send({ error: error.message });
   }
