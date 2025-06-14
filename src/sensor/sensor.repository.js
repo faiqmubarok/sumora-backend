@@ -32,3 +32,5 @@ export const getLastSensor = async (deviceId) => {
 };
 
 export const createSensor = async (data) => prisma.sensorData.create({ data });
+
+export const createPrediction = async (data) => prisma.prediction.create({ data });
