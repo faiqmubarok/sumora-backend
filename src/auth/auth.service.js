@@ -44,7 +44,9 @@ const loginService = async ({ email, password }) => {
     expiresIn: JWT_EXPIRES_IN,
   });
 
-  return token;
+  const { password: _, ...safeUser } = user;
+
+  return { token, user: safeUser };
 };
 
 export default { registerService, loginService };

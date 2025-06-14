@@ -30,9 +30,9 @@ router.post("/login", async (req, res) => {
     await loginSchema.validate(req.body, { abortEarly: false });
 
     const { email, password } = req.body;
-    const token = await loginService({ email, password });
+    const { token, user } = await loginService({ email, password });
 
-    res.status(200).json({ token, message: "Login successful" });
+    res.status(200).json({ token, message: "Login successful", user });
   } catch (error) {
     if (error.name === "ValidationError") {
       return res.status(400).json({ errors: error.errors });
