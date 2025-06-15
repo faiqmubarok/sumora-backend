@@ -7,28 +7,28 @@ router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const { limit } = req.query;
-    const parsedLimit = Number(limit);
 
     if (!id) return res.status(400).json({ error: "sensorId is required" });
 
-    const result = await sensorService.getSensorByIdService(
-      id,
-      isNaN(parsedLimit) ? undefined : parsedLimit
-    );
+    const parsedLimit = Number(limit);
+    const finalLimit = !isNaN(parsedLimit) && parsedLimit > 0 ? parsedLimit : undefined;
+
+    const result = await sensorService.getSensorByIdService(id, finalLimit);
     res.status(200).json({ result });
   } catch (error) {
     console.error(error);
-    res.status(400).send({ error: error.message });
+    res.status(400).json({ error: error.message });
   }
 });
 
 router.post("/", async (req, res) => {
   try {
-    const result = await sensorService.createSensor(req.body);
-    res.status(201).send({ result });
+    const io = req.app.get("io");
+    const result = await sensorService.createSensor(req.body, io);
+    res.status(201).json({ success: true, result });
   } catch (error) {
-    console.log(error.message);
-    res.status(400).send({ error: error.message });
+    console.error(error);
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
