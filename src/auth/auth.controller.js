@@ -1,9 +1,10 @@
 import { Router } from "express";
 import authService from "./auth.service.js";
 import { registerSchema, loginSchema } from "./auth.validation.js";
+import passport from "passport";
 
 const router = Router();
-const { registerService, loginService } = authService;
+const { registerService, loginService, googleLoginService } = authService;
 
 router.post("/register", async (req, res) => {
   try {
@@ -40,5 +41,23 @@ router.post("/login", async (req, res) => {
     return res.status(401).json({ error: error.message });
   }
 });
+
+router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/login",
+    session: false,
+  }),
+  async (req, res) => {
+    try {
+      const { token, user } = await googleLoginService(req.user);
+      res.status(200).json({ token, user, message: "Login with Google successful" });
+    } catch (err) {
+      res.status(500).json({ error: "Failed to authenticate with Google", message: err.message });
+    }
+  }
+);
 
 export default router;
