@@ -49,4 +49,36 @@ const loginService = async ({ email, password }) => {
   return { token, user: safeUser };
 };
 
-export default { registerService, loginService };
+const googleLoginService = async (googleUserProfile) => {
+  const email = googleUserProfile.email;
+  const name = googleUserProfile.name;
+  const photo = googleUserProfile.photo;
+
+  let user = await findUserByEmail(email);
+
+  if (!user) {
+    user = await createUser({
+      name,
+      email,
+      photo,
+      password,
+    });
+  }
+
+  const payload = {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    photo: user.photo,
+  };
+
+  const token = jwt.sign(payload, JWT_SECRET, {
+    expiresIn: JWT_EXPIRES_IN,
+  });
+
+  const { password: _, ...safeUser } = user;
+
+  return { token, user: safeUser };
+};
+
+export default { registerService, loginService, googleLoginService };

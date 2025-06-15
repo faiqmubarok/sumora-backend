@@ -1,4 +1,7 @@
 import express from "express";
+import passport from "passport";
+import "./utils/passport.js";
+import session from "express-session";
 import cors from "cors";
 import dotenv from "dotenv";
 import authController from "./auth/auth.controller.js";
@@ -11,7 +14,19 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true,
+}));
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || "01JXHRAD85FT1QHEEY2FMKFKM2",
+  resave: false,
+  saveUninitialized: false,
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get("/", (req, res) => {
   res.json({ message: "Hello" });

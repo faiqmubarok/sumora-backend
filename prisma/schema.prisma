@@ -21,6 +21,7 @@ model User {
   // photo     String?
   photo     Json?
   phone     String?
+  googleId  String? @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

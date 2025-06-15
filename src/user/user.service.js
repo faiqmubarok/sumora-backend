@@ -32,7 +32,7 @@ const updateUserByIdService = async (userId, data, file) => {
     try {
       const existingImageUrl = existingUser.photo;
 
-      if (existingImageUrl) {
+      if (existingImageUrl && existingImageUrl.publicId) {
         await deleteImageFromCloudinary(existingImageUrl.publicId);
       }
 
