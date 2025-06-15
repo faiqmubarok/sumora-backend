@@ -10,7 +10,7 @@ export const getSensorByIdService = async (deviceId, limit) => {
   return result;
 };
 
-export const createSensor = async (data) => {
+export const createSensor = async (data, io) => {
   const { deviceId, ph, chloromines, solids, sulfate } = data;
 
   const sensorData = {
@@ -41,12 +41,24 @@ export const createSensor = async (data) => {
       result: predictionResult,
     });
 
+    io.to(deviceId).emit("newSensorData", {
+      ...savedSensor,
+      prediction: predictionResult,
+    });
+
     return {
       ...savedSensor,
       prediction: predictionResult,
     };
   } catch (error) {
-    console.error("Gagal memanggil ML API:", error.message);
+    console.error("Gagal memanggil ML API:");
+    if (axios.isAxiosError(error)) {
+      console.error("Response:", error.response?.data);
+      console.error("Status:", error.response?.status);
+      console.error("Headers:", error.response?.headers);
+    } else {
+      console.error("Error:", error.message);
+    }
     return savedSensor;
   }
 };
